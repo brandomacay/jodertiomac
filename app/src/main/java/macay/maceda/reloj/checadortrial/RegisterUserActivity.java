@@ -193,7 +193,12 @@ public class RegisterUserActivity extends AppCompatActivity {
         });
 
         dbHelper = new DatabaseOpenHelper(this);
+
+
+
     }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -337,7 +342,19 @@ public class RegisterUserActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.save) {
 
-            validate_new_user();
+            Cursor mc = dbHelper.get_all_users();
+
+            if (mc.getCount() > 4) {
+
+                Toast.makeText(RegisterUserActivity.this,
+                        "Has un dialogo mamalon con un imagebutton icono del playstore", Toast.LENGTH_LONG).show();
+            }
+            else {
+                validate_new_user();
+            }
+
+
+
             //Toast.makeText(RegisterUserActivity.this, "Datos guardado correctamente!", Toast.LENGTH_LONG).show();
             //finish();
             return true;

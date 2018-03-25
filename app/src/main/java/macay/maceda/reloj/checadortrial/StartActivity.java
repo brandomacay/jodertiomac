@@ -33,6 +33,9 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     TextView vhour,vpuntos,vminutes,vppmm,datte;
     boolean isShowed = false;
     private DatabaseOpenHelper dbHelper;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -391,4 +394,6 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         startActivity(goToUpdate);
 
     }
+
+
 }

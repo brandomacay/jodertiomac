@@ -567,5 +567,17 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         //return c;
     }
 
+    public Cursor get_all_activitys () {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        Cursor mCursor = db.query(TABLE_CLOCKING_NAME, null,
+                null,
+                null,
+                null, null, null);
+        return mCursor;
+
+    }
+
 }
 

@@ -67,6 +67,17 @@ public class UserPanelActivity extends AppCompatActivity {
         breakin_tv = (TextView) findViewById(R.id.breakin_tv);
         breakout_tv = (TextView) findViewById(R.id.breakout_tv);
 
+        Cursor mc = dbHelper.get_all_activitys();
+
+        if (mc.getCount() > 3) {
+
+            Toast.makeText(UserPanelActivity.this,
+                    "Cerrar esta actividad- Has un dialogo mamalon con un imagebutton icono del playstore", Toast.LENGTH_LONG).show();
+        finish();
+        }
+
+
+
         try {
             receivedPersonId = getIntent().getLongExtra("USER_ID", 1);
         } catch (Exception e) {
