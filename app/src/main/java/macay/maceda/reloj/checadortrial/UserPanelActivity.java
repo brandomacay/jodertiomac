@@ -1,8 +1,11 @@
 package macay.maceda.reloj.checadortrial;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -70,10 +73,8 @@ public class UserPanelActivity extends AppCompatActivity {
         Cursor mc = dbHelper.get_all_activitys();
 
         if (mc.getCount() > 3) {
-
-            Toast.makeText(UserPanelActivity.this,
-                    "Cerrar esta actividad- Has un dialogo mamalon con un imagebutton icono del playstore", Toast.LENGTH_LONG).show();
-        finish();
+            download_full_app();
+            finish();
         }
 
 
@@ -287,6 +288,32 @@ public class UserPanelActivity extends AppCompatActivity {
                     finish();
                 }
 
+            }
+        });
+    }
+
+    private void download_full_app () {
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(UserPanelActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
+        Button yes = (Button) mView.findViewById(R.id.si);
+        Button no = (Button) mView.findViewById(R.id.no);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://play.google.com/store");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
     }

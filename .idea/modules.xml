@@ -4,8 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RelojChecador2.iml" filepath="$PROJECT_DIR$/RelojChecador2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jodertiomac.iml" filepath="$PROJECT_DIR$/jodertiomac.iml" />
+      <module fileurl="file://C:\Users\brand\Desktop\RelojChecador2\jodertiomac.iml" filepath="C:\Users\brand\Desktop\RelojChecador2\jodertiomac.iml" />
     </modules>
   </component>
 </project>
