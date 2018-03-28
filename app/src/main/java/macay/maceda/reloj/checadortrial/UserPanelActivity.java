@@ -74,7 +74,6 @@ public class UserPanelActivity extends AppCompatActivity {
 
         if (mc.getCount() > 3) {
             download_full_app();
-            finish();
         }
 
 
@@ -301,10 +300,11 @@ public class UserPanelActivity extends AppCompatActivity {
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
+        dialog.setCancelable(false);
         no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                finish();
             }
         });
 
@@ -314,6 +314,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 Uri uri = Uri.parse("https://play.google.com/store");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
+                finish();
             }
         });
     }
