@@ -1,5 +1,6 @@
 package macay.maceda.reloj.checadortrial;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,9 +15,11 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 
@@ -46,6 +49,7 @@ public class UserPanelActivity extends AppCompatActivity {
 
     private int screenWidth;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +74,12 @@ public class UserPanelActivity extends AppCompatActivity {
         breakin_tv = (TextView) findViewById(R.id.breakin_tv);
         breakout_tv = (TextView) findViewById(R.id.breakout_tv);
 
+
         Cursor mc = dbHelper.get_all_activitys();
 
-        if (mc.getCount() > 3) {
+        if (mc.getCount() > 9) {
             download_full_app();
         }
-
-
 
         try {
             receivedPersonId = getIntent().getLongExtra("USER_ID", 1);
@@ -108,7 +111,7 @@ public class UserPanelActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                         */
                 chekin_tv.setVisibility(View.VISIBLE);
-                chekin_tv.setText("ENTRADA: " +mWorkin);
+                chekin_tv.setText(getString(R.string.entrada)+" :" +mWorkin);
 
                 if (mWorkout == null) {
 
@@ -128,7 +131,7 @@ public class UserPanelActivity extends AppCompatActivity {
                     workout.setVisibility(View.GONE);
                     workin.setVisibility(View.VISIBLE);
                     checkout_tv.setVisibility(View.VISIBLE);
-                    checkout_tv.setText("SALIDA: " + mWorkout);
+                    checkout_tv.setText(getString(R.string.salida)+" :" + mWorkout);
 
 
                     /*
@@ -144,7 +147,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 }
                 else {
                     breakout_tv.setVisibility(View.VISIBLE);
-                    breakout_tv.setText("SALIDA A COMER: " +mBreakout);
+                    breakout_tv.setText(getString(R.string.salida_comer) +mBreakout);
                     workout.setVisibility(View.GONE);
                     workback.setVisibility(View.VISIBLE);
                 }
@@ -162,7 +165,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 }
                 else {
                     breakin_tv.setVisibility(View.VISIBLE);
-                    breakin_tv.setText("ENTRADA DE COMIDA: " +mBreakin);
+                    breakin_tv.setText(getString(R.string.regreso_trabajo) +mBreakin);
 
                     if (mWorkout == null) {
                         workin.setVisibility(View.GONE);
@@ -242,7 +245,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 if (mBreakout == null) {
                     dbHelper.insert_user_workin(receivedPersonId, datex(), datetimex());
                     Toast.makeText(UserPanelActivity.this,
-                            "La entrada fue registrada correctamente",
+                            getString(R.string.entrada_registrada),
                             Toast.LENGTH_LONG).show();
                     finish();
                 }
@@ -250,7 +253,7 @@ public class UserPanelActivity extends AppCompatActivity {
 
                         dbHelper.insert_user_workin(receivedPersonId, datex(), datetimex());
                         Toast.makeText(UserPanelActivity.this,
-                                "La entrada fue registrada correctamente",
+                                getString(R.string.entrada_registrada),
                                 Toast.LENGTH_LONG).show();
                         finish();
                     }
@@ -282,39 +285,11 @@ public class UserPanelActivity extends AppCompatActivity {
                 else {
                     dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
                             UserPanelActivity.this );
-                    Toast.makeText(UserPanelActivity.this,"Cuminacion de trabajo exitosa!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(UserPanelActivity.this,getString(R.string.culminacion_trabajo_exitosa),Toast.LENGTH_LONG).show();
                    // dialog.dismiss();
                     finish();
                 }
 
-            }
-        });
-    }
-
-    private void download_full_app () {
-
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(UserPanelActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
-        Button yes = (Button) mView.findViewById(R.id.si);
-        Button no = (Button) mView.findViewById(R.id.no);
-        mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
-        dialog.show();
-        dialog.setCancelable(false);
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri uri = Uri.parse("https://play.google.com/store");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-                finish();
             }
         });
     }
@@ -328,11 +303,11 @@ public class UserPanelActivity extends AppCompatActivity {
         final EditText repeatpassword = (EditText) mView.findViewById(R.id.repeatpass);
         password.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         repeatpassword.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        password.setHint("new pin");
-        repeatpassword.setHint("repeat pin");
+        password.setHint(getString(R.string.nuevo_pin));
+        repeatpassword.setHint(getString(R.string.repita_pin));
         TextView tv = (TextView) mView.findViewById(R.id.textView);
         //  tv.setVisibility(View.GONE);
-        tv.setText("Cambiar Pin");
+        tv.setText(getString(R.string.cambiar_pin));
         Button cancel = (Button) mView.findViewById(R.id.cancel);
         Button register = (Button) mView.findViewById(R.id.login);
 
@@ -357,8 +332,8 @@ public class UserPanelActivity extends AppCompatActivity {
                 if (!password.getText().toString().isEmpty() && !repeatpassword.getText().toString().isEmpty()) {
                     if (password.getText().toString().equals(repeatpassword.getText().toString())) {
                         if (password.length() < 4 && repeatpassword.length() < 4){
-                            password.setError("Agrege al menos 4 numeros");
-                            repeatpassword.setError("Agrege al menos 4 numeros");
+                            password.setError(getString(R.string.agregue_4_numeros));
+                            repeatpassword.setError(getString(R.string.agregue_4_numeros));
                         }else {
                             Empleados_admin updatedPerson = new Empleados_admin(receivedPerson.getName(),
                                     receivedPerson.getLastname(),receivedPerson.getNumber_phone(),
@@ -374,11 +349,11 @@ public class UserPanelActivity extends AppCompatActivity {
 
 
                     } else {
-                        repeatpassword.setError("Las contraseñas no coinciden");
+                        repeatpassword.setError(getString(R.string.clave_no_coinciden));
                     }
                 } else {
                     Toast.makeText(UserPanelActivity.this,
-                            "Ingresa todos los campos",
+                            getString(R.string.ingresar_campos),
                             Toast.LENGTH_SHORT).show();
                 }
 
@@ -409,7 +384,7 @@ public class UserPanelActivity extends AppCompatActivity {
             public void onClick(View view) {
                 dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
                     UserPanelActivity.this );
-                Toast.makeText(UserPanelActivity.this,"Culminacion de trabajo exitosa!",Toast.LENGTH_LONG).show();
+                Toast.makeText(UserPanelActivity.this,getString(R.string.culminacion_trabajo_exitosa),Toast.LENGTH_LONG).show();
                 dialog.dismiss();
                 finish();
             }
@@ -422,7 +397,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 dbHelper.insert_user_breakout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
                         UserPanelActivity.this );
 
-                Toast.makeText(UserPanelActivity.this,"Hora de comida",Toast.LENGTH_LONG).show();
+                Toast.makeText(UserPanelActivity.this,getString(R.string.hora_comer),Toast.LENGTH_LONG).show();
                 dialog.dismiss();
                 finish();
             }
@@ -528,5 +503,33 @@ public class UserPanelActivity extends AppCompatActivity {
             finish();
         }
     };
+
+    private void download_full_app () {
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(UserPanelActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
+        Button yes = (Button) mView.findViewById(R.id.si);
+        Button no = (Button) mView.findViewById(R.id.no);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        dialog.setCancelable(false);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://play.google.com/store");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
 
 }

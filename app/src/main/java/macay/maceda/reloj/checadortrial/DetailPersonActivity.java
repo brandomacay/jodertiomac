@@ -10,9 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import macay.maceda.reloj.checadortrial.Adapters.Person_detail_activivities;
+import macay.maceda.reloj.checadortrial.Adapters.User_detail_admin;
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
+import macay.maceda.reloj.checadortrial.Model.Actividades_empleados;
 import macay.maceda.reloj.checadortrial.Model.Empleados_admin;
 
 public class DetailPersonActivity extends AppCompatActivity {
@@ -87,10 +92,10 @@ public class DetailPersonActivity extends AppCompatActivity {
 
     private void deletUser(){
         AlertDialog.Builder myBulid = new AlertDialog.Builder(this).setCancelable(false);
-        myBulid.setMessage("En verdad deseas eliminar a esta persona?");
+        myBulid.setMessage(getString(R.string.seguro_eliminar));
         myBulid.setIcon(R.drawable.delete);
-        myBulid.setTitle("Eliminar Usuario");
-        myBulid.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+        myBulid.setTitle(getString(R.string.eliminar_persona));
+        myBulid.setPositiveButton(getString(R.string.eliminar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DatabaseOpenHelper dbHelper = new DatabaseOpenHelper(DetailPersonActivity.this);
@@ -98,7 +103,7 @@ public class DetailPersonActivity extends AppCompatActivity {
                 finish();
             }
         });
-        myBulid.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+        myBulid.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

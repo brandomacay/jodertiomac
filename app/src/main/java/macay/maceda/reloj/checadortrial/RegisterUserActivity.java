@@ -42,8 +42,7 @@ import java.util.Date;
 
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
 import macay.maceda.reloj.checadortrial.Model.Empleados_admin;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
+
 import com.squareup.picasso.Picasso;
 
 
@@ -80,7 +79,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         ocupation = (EditText) findViewById(R.id.register_user_ocupation_et);
         area = (EditText) findViewById(R.id.register_user_area_et);
         blocked_sw = (Switch) findViewById(R.id.user_blocked_switch);
-        blocked_sw.setText("Desbloqueado");
+        blocked_sw.setText(getString(R.string.desbloqueado));
         blocked_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -91,28 +90,28 @@ public class RegisterUserActivity extends AppCompatActivity {
                             RegisterUserActivity.this);
 
                     // set title
-                    alertDialogBuilder.setTitle("Bloquear usuario");
+                    alertDialogBuilder.setTitle(getString(R.string.bloquear_persona));
 
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("El usuario no podra acceder")
+                            .setMessage(getString(R.string.no_acceso))
                             .setCancelable(false)
-                            .setPositiveButton("Bloquear",new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.bloquear),new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, close
                                     // current activity
                                     blocked_sw.setChecked(true);
-                                    blocked_sw.setText("Bloqueado");
+                                    blocked_sw.setText(getString(R.string.bloqueado));
                                     blocked = 1;
                                 }
                             })
-                            .setNegativeButton("Cancelar",new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getString(R.string.cancelar),new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
                                     blocked_sw.setChecked(false);
                                     blocked = 0;
-                                    blocked_sw.setText("Desbloqueado");
+                                    blocked_sw.setText(getString(R.string.desbloqueado));
                                 }
                             });
 
@@ -125,7 +124,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                 else {
                 //    blocked_sw.setText("All List");  //To change the text near to switch
                    // Log.d("You are :", " Not Checked");
-                    blocked_sw.setText("Desbloqueado");
+                    blocked_sw.setText(getString(R.string.desbloqueado));
                     blocked = 0;
                 }
             }
@@ -153,12 +152,12 @@ public class RegisterUserActivity extends AppCompatActivity {
                 } catch (IOException ex) {
                     // Error occurred while creating the File
                     Toast.makeText(RegisterUserActivity.this,
-                            "Error creando el archivo", Toast.LENGTH_LONG).show();
+                            getString(R.string.error_archivo), Toast.LENGTH_LONG).show();
                 }
 
                 CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropMenuCropButtonTitle("Elegir")
+                        .setCropMenuCropButtonTitle(getString(R.string.elegir))
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                         .setOutputCompressQuality(75)
@@ -194,12 +193,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         });
 
         dbHelper = new DatabaseOpenHelper(this);
-
-
-
     }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -350,64 +344,35 @@ public class RegisterUserActivity extends AppCompatActivity {
             }
             else {
                 validate_new_user();
-            }
-
-
-
+            };
             //Toast.makeText(RegisterUserActivity.this, "Datos guardado correctamente!", Toast.LENGTH_LONG).show();
             //finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    private void download_full_app () {
-
-        android.app.AlertDialog.Builder mBuilder = new android.app.AlertDialog.Builder(RegisterUserActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
-        Button yes = (Button) mView.findViewById(R.id.si);
-        Button no = (Button) mView.findViewById(R.id.no);
-        mBuilder.setView(mView);
-        final android.app.AlertDialog dialog = mBuilder.create();
-        dialog.show();
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri uri = Uri.parse("https://play.google.com/store");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-            }
-        });
-    }
-
 
     private void validate_new_user () {
 
         if (name.getText().toString().trim().isEmpty()) {
-            name.setError("Nombre del usuario");
+            name.setError(getString(R.string.ingresar_nombre));
         }
 
         if (password.getText().toString().trim().isEmpty() ||
                 password.getText().toString().trim().length() < 4 ) {
-            password.setError("Agrege al menos 4 numeros");
+            password.setError(getString(R.string.agregue_4_numeros));
         }
 
 
         if (lastname.getText().toString().trim().isEmpty()) {
-            lastname.setError("Apellidos del usuario");
+            lastname.setError(getString(R.string.ingresar_apellido));
         }
 
 
 
         if (!started_picked) {
            // started_date.requestFocus();
-            started_date.setError("Fecha en que empezo a laborar");
+            started_date.setError(getString(R.string.contrato));
 
         }
         else {
@@ -417,7 +382,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
         if (!birthday_picked) {
 
-            birthday.setError("Fecha de nacimiento");
+            birthday.setError(getString(R.string.nacimiento));
 
         }
         else {
@@ -427,7 +392,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         if (!name.getText().toString().trim().isEmpty() && !name.getText().toString().trim().isEmpty()
                  && birthday_picked && started_picked && !password.getText().toString().trim().isEmpty()) {
           if (password.getText().toString().trim().length() < 4 ) {
-              password.setError("Agrege al menos 4 numeros");
+              password.setError(getString(R.string.agregue_4_numeros));
 
           }
           else {
@@ -458,7 +423,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute (Cursor result) {
                 Toast.makeText(RegisterUserActivity.this,
-                          "Datos guardados correctamente!", Toast.LENGTH_LONG).show();
+                          getString(R.string.datos_guardados), Toast.LENGTH_LONG).show();
                 clean_fields();
 
             }
@@ -477,8 +442,8 @@ public class RegisterUserActivity extends AppCompatActivity {
       //  private EditText name, lastname, email, phone, address, ocupation, area;
         birthday_picked = false;
         started_picked = false;
-        birthday.setText("Fecha de nacimiento");
-        started_date.setText("Fecha de contrato");
+        birthday.setText(getString(R.string.nacimiento));
+        started_date.setText(getString(R.string.contrato));
         name.setText("");
         lastname.setText("");
         email.setText("");
@@ -571,7 +536,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 Toast.makeText(RegisterUserActivity.this,
-                          "Error creando el archivo", Toast.LENGTH_LONG).show();
+                          getString(R.string.error_archivo), Toast.LENGTH_LONG).show();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -616,7 +581,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             //se ha creado bien
             //string.replace(" ", "\\ ");
             Toast.makeText(RegisterUserActivity.this,
-                    "Carpeta creada", Toast.LENGTH_LONG).show();
+                    getString(R.string.carpeta_creada), Toast.LENGTH_LONG).show();
 
 
         }
@@ -626,7 +591,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             }
             else
                 Toast.makeText(RegisterUserActivity.this,
-                        "Carpeta o SD no encontrada", Toast.LENGTH_LONG).show();
+                        getString(R.string.error_archivo), Toast.LENGTH_LONG).show();
 
         }
 
@@ -643,6 +608,31 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     }
 
+    private void download_full_app () {
+
+        android.app.AlertDialog.Builder mBuilder = new android.app.AlertDialog.Builder(RegisterUserActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
+        Button yes = (Button) mView.findViewById(R.id.si);
+        Button no = (Button) mView.findViewById(R.id.no);
+        mBuilder.setView(mView);
+        final android.app.AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://play.google.com/store");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
 
 
 }

@@ -1,5 +1,7 @@
 package macay.maceda.reloj.checadortrial.DataBase;
 
+
+import android.app.*;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,11 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import macay.maceda.reloj.checadortrial.Model.Actividades_empleados;
 import macay.maceda.reloj.checadortrial.Model.Empleados_admin;
+import macay.maceda.reloj.checadortrial.R;
+
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "relojchecador";
@@ -374,7 +379,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DELETE FROM "+TABLE_NAME+" WHERE _id='"+id+"'");
-        Toast.makeText(context, "Empleado borrado", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.emple_borrado), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -395,7 +400,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 "', password ='"+ updatedperson.getPassword() +
                 "', started_date ='"+ updatedperson.getDatework() +
                 "'  WHERE _id='" + personId + "'");
-        Toast.makeText(context, "Datos actualizados!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.datos_actualizados), Toast.LENGTH_SHORT).show();
 
 
     }
@@ -416,7 +421,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 "', password ='"+ updatedperson.getPassword() +
                 "', started_date ='"+ updatedperson.getDatework() +
                 "'  WHERE _id='" + personId + "'");
-        Toast.makeText(context, "Pin cambiado exitosamente!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.pin_cambiado), Toast.LENGTH_SHORT).show();
 
 
     }
@@ -459,7 +464,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 " SET workout ='" + workout +
                 "'  WHERE userid='" + user_id + "' AND workin='" + workin +
                 "'");
-        Toast.makeText(context, "Salida registrada", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.salida_registrada), Toast.LENGTH_LONG).show();
 
 
     }
@@ -471,7 +476,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 " SET breakout ='" + breakout +
                 "'  WHERE userid='" + user_id + "' AND workin='" + workin +
                 "'");
-        Toast.makeText(context, "Salida registrada", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.salida_registrada), Toast.LENGTH_LONG).show();
 
     }
 
@@ -483,7 +488,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 "'  WHERE userid='" + user_id + "' AND workin='" + workin +
                 "'");
 
-        Toast.makeText(context, "De vuelta al trabajo,registrada!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.vuelta_trabajo), Toast.LENGTH_LONG).show();
 
     }
 
@@ -566,7 +571,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         return mCursor;
         //return c;
     }
-
     public Cursor get_all_activitys () {
         SQLiteDatabase db = this.getReadableDatabase();
 
