@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -345,9 +346,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             Cursor mc = dbHelper.get_all_users();
 
             if (mc.getCount() > 4) {
-
-                Toast.makeText(RegisterUserActivity.this,
-                        "Has un dialogo mamalon con un imagebutton icono del playstore", Toast.LENGTH_LONG).show();
+                download_full_app();
             }
             else {
                 validate_new_user();
@@ -361,6 +360,32 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void download_full_app () {
+
+        android.app.AlertDialog.Builder mBuilder = new android.app.AlertDialog.Builder(RegisterUserActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_play_store, null);
+        Button yes = (Button) mView.findViewById(R.id.si);
+        Button no = (Button) mView.findViewById(R.id.no);
+        mBuilder.setView(mView);
+        final android.app.AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://play.google.com/store");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
+
 
     private void validate_new_user () {
 
