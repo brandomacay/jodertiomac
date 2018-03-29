@@ -1,6 +1,6 @@
 package macay.maceda.reloj.checadortrial;
 
-import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,16 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import macay.maceda.reloj.checadortrial.Adapters.User_detail_admin;
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
-
-import static android.widget.Toast.LENGTH_LONG;
+import macay.maceda.reloj.checadortrial.Model.Empleados_admin;
 
 public class AdminActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -160,26 +163,19 @@ public class AdminActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void acerca_de_macymax(){
-
-            android.app.AlertDialog.Builder mBuilder = new android.app.AlertDialog.Builder(AdminActivity.this);
-            //Button yes = (Button) mView.findViewById(R.id.si);
-            //Button no = (Button) mView.findViewById(R.id.no);
-        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+    private void acerca_de_macymax () {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(AdminActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_creditos, null);
+        ImageView exit = (ImageView) mView.findViewById(R.id.salir);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        exit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
+                dialog.dismiss();
             }
         });
-            final android.app.AlertDialog dialog = mBuilder.create();
-        dialog.setTitle("Creditos Macymax");
-        dialog.setMessage("Creado por: " +
-                "                                       Alejandro Maceda"+
-                "                                       Brandon Macay" +
-                "                                       Mexico-Ecuador");
-
-            dialog.show();
-
-            //
     }
 
     @Override
