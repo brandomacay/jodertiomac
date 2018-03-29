@@ -166,7 +166,7 @@ public class AdminActivity extends AppCompatActivity {
     private void acerca_de_macymax () {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(AdminActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_creditos, null);
-        ImageView exit = (ImageView) mView.findViewById(R.id.salir);
+        Button exit = (Button) mView.findViewById(R.id.salir);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
