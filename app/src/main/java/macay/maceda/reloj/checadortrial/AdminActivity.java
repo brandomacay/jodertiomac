@@ -1,6 +1,8 @@
 package macay.maceda.reloj.checadortrial;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import macay.maceda.reloj.checadortrial.Adapters.User_detail_admin;
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class AdminActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -146,11 +152,35 @@ public class AdminActivity extends AppCompatActivity {
             overridePendingTransition(0,0);
             return true;
         }
+        if (id == R.id.acerca){
+            acerca_de_macymax();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void acerca_de_macymax(){
 
+            android.app.AlertDialog.Builder mBuilder = new android.app.AlertDialog.Builder(AdminActivity.this);
+            //Button yes = (Button) mView.findViewById(R.id.si);
+            //Button no = (Button) mView.findViewById(R.id.no);
+        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+            final android.app.AlertDialog dialog = mBuilder.create();
+        dialog.setTitle("Creditos Macymax");
+        dialog.setMessage("Creado por: " +
+                "                                       Alejandro Maceda"+
+                "                                       Brandon Macay" +
+                "                                       Mexico-Ecuador");
+
+            dialog.show();
+
+            //
+    }
 
     @Override
     protected void onResume() {
