@@ -102,4 +102,6 @@
     <string name="editar_usuario">Edit user</string>
     <string name="opciones">Options</string>
     <string name="acerca_de">About</string>
+    <string name="consigue_la_app">Get the app without limits</string>
+    <string name="descargar_ahora">Do you want to download now?</string>
 </resources>

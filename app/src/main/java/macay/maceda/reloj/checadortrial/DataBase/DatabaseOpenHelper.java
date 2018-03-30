@@ -378,8 +378,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public void deletePerson(long id, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        db.execSQL("DELETE FROM "+TABLE_CLOCKING_NAME+" WHERE userid='"+id+"'");
         db.execSQL("DELETE FROM "+TABLE_NAME+" WHERE _id='"+id+"'");
-        db.execSQL("DELETE FROM "+TABLE_CLOCKING_NAME+" WHERE "+COLUMN_CLOCKING_ID+"='"+id+"'");
         Toast.makeText(context, context.getString(R.string.emple_borrado), Toast.LENGTH_SHORT).show();
 
     }
