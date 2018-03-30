@@ -70,10 +70,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
         <activity
             android:name=".SettingActivity"
-            android:label="Opciones" />
+            android:label="@string/opciones" />
         <activity
             android:name=".DetailPersonActivity"
             android:label=""

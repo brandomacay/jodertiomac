@@ -15,12 +15,13 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -31,6 +32,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.opencsv.CSVWriter;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,8 +43,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import com.opencsv.CSVWriter;
 
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
 
@@ -388,7 +389,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     .setPositiveButton(getString(R.string.si), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // continue with delete
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                             //sharingIntent.setType("text/comma_separated_values/csv");
                             sharingIntent.setType("application/octet-stream");
                             //sharingIntent.setData(csv);
@@ -773,9 +774,26 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         do {
                             sb.append("<tr>");
                             sb.append("<td>" + mc.getString(mc.getColumnIndex("workin")) + "</td>");
-                            sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
-                            sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
-                            sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
+                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))) {
+                                sb.append("<td> </td>");
+                            }
+                            else {
+                                sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
+                            }
+                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakin")))) {
+                                sb.append("<td> </td>");
+                            }
+                            else {
+                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
+                            }
+                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakout")))) {
+                                sb.append("<td> </td>");
+                            }
+                            else {
+                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
+                            }
+                           // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
+                            //sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
                             sb.append("</tr>");
                             //Toast.makeText(SettingActivity.this, "registro encontrado", Toast.LENGTH_SHORT).show();
 
@@ -815,9 +833,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     writer.flush();
                     writer.close();
                     Uri uri = Uri.fromFile(gpxfile);
-
-
-                    Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW);
+                     Intent browserIntent = new Intent(Intent.ACTION_VIEW);
 
                     browserIntent.setDataAndType(uri, "text/html");
 
