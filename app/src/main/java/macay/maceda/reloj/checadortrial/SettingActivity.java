@@ -41,6 +41,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -756,13 +758,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     sb.append("<th>" + result.getString(result.getColumnIndex("name"))
                             + " " + result.getString(result.getColumnIndex("lastname")) + "</th>");
                     sb.append("<th>"+getString(R.string.cargo) + result.getString(result.getColumnIndex("occupation")) + "</th>");
-                    sb.append("<th> </th>");
+                    sb.append("<th>"+"         "+"</th>");
+                    sb.append("<th>"+"         "+"</th>");
+                    sb.append("<th>         </th>");
                     sb.append("</tr>");
                     sb.append("<tr>");
+                    sb.append("<th>"+"Dia: "+"</th>");
                     sb.append("<th>"+getString(R.string.entrada)+"</th>");
                     sb.append("<th>"+getString(R.string.salida_comer)+"</th>");
                     sb.append("<th>"+getString(R.string.regreso_trabajo)+"</th>");
                     sb.append("<th>"+getString(R.string.salida)+" </th>");
+                    sb.append("<th>"+"Tiempo laborado: "+" </th>");
                     sb.append("</tr>");
                     Cursor mc = dbHelper.user_activity_from_date(result.getString(result.getColumnIndex("_id")),
                             initial_d, final_d);
@@ -774,9 +780,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
                     if (mc.moveToFirst()) {
                        // Toast.makeText(SettingActivity.this, "inside movetofirst", Toast.LENGTH_SHORT).show();
-
+                        int i = 0;
                         do {
+                            i++;
                             sb.append("<tr>");
+                            sb.append("<td>" + i + "</td>");
                             sb.append("<td>" + mc.getString(mc.getColumnIndex("workin")) + "</td>");
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakout")))) {
                                 sb.append("<td> </td>");
@@ -796,9 +804,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             else {
                                 sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
                             }
+                            sb.append("<td>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout"))) + "</td>");
 
-
-                           // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
+                            // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
                             //sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
                             sb.append("</tr>");
                             //Toast.makeText(SettingActivity.this, "registro encontrado", Toast.LENGTH_SHORT).show();
@@ -868,6 +876,37 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    private Date stringToDate(String aDate,String aFormat) {
+
+        if(aDate==null) return null;
+        ParsePosition pos = new ParsePosition(0);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
+        Date stringDate = simpledateformat.parse(aDate, pos);
+        return stringDate;
+
+    }
+    private String result_time(String entrada,String salida ){
+
+        Date start = stringToDate(entrada,"dd-MM-yyyy hh:mm:ss");
+        Date end = stringToDate(salida,"dd-MM-yyyy hh:mm:ss");
+        long resultado = end.getTime() - start.getTime();
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+
+        long hora = resultado / hoursInMilli;
+
+        String total = "0 horas";
+
+        if (hora>0){
+            if (hora==1){
+                total = hora+" hora";
+            }else{
+                total = hora+" horas";
+            }
+        }
+        return total;
+    }
 
     private void create_alertDialog_report () {
 
