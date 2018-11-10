@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -388,16 +389,19 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     .setMessage(getString(R.string.compartir_csv))
                     .setPositiveButton(getString(R.string.si), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // continue with delete
-                            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                            //sharingIntent.setType("text/comma_separated_values/csv");
-                            sharingIntent.setType("application/octet-stream");
-                            //sharingIntent.setData(csv);
-                            //sharingIntent.putExtra(Intent.EXTRA_STREAM, csv);
-                            sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" +
-                                    f.getAbsolutePath().toString()) );
-                            startActivity(Intent.createChooser(sharingIntent, ""));
-                            //startActivity(Intent.createChooser(sharingIntent, getResources().getText(R.string.send_to)));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                                Uri uris = FileProvider.getUriForFile(SettingActivity.this, BuildConfig.APPLICATION_ID + ".provider", f);
+                                Intent picMessageIntent = new Intent(Intent.ACTION_SEND);
+                                picMessageIntent.setType("application/octet-stream");
+                                picMessageIntent.putExtra(Intent.EXTRA_STREAM,uris);
+                                startActivity(Intent.createChooser(picMessageIntent, "Compartir con..."));
+                            }else {
+                                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                                sharingIntent.setType("application/octet-stream");
+                                sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" +
+                                        f.getAbsolutePath().toString()) );
+                                startActivity(Intent.createChooser(sharingIntent, ""));
+                            }
 
                         }
                     })
@@ -757,8 +761,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     sb.append("<tr>");
                     sb.append("<th>"+getString(R.string.entrada)+"</th>");
                     sb.append("<th>"+getString(R.string.salida)+" </th>");
-                    sb.append("<th>"+getString(R.string.salida_comer)+"</th>");
                     sb.append("<th>"+getString(R.string.regreso_trabajo)+"</th>");
+                    sb.append("<th>"+getString(R.string.salida_comer)+"</th>");
                     sb.append("</tr>");
                     Cursor mc = dbHelper.user_activity_from_date(result.getString(result.getColumnIndex("_id")),
                             initial_d, final_d);
@@ -833,24 +837,24 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     writer.flush();
                     writer.close();
                     Uri uri = Uri.fromFile(gpxfile);
-                     Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
 
                     browserIntent.setDataAndType(uri, "text/html");
 
-
-                    startActivity(Intent.createChooser(browserIntent, "Abrir con..."));
-
-
-                   // Intent sharingIntent = new Intent(android.content.Intent.ACTION_VIEW);
-
-                   // sharingIntent.setType("multipart/related");
-
-                    //sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" +
-                      //      uri) );
-                    //startActivity(Intent.createChooser(sharingIntent, ""));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                        File file = new File("/storage/emulated/0/relojchecador/archivos/reportes.html");
+                        Uri uris = FileProvider.getUriForFile(SettingActivity.this, BuildConfig.APPLICATION_ID + ".provider", file);
+                        Intent picMessageIntent = new Intent(Intent.ACTION_VIEW);
+                        picMessageIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        picMessageIntent.setDataAndType(uris ,"text/html");
+                        startActivity(Intent.createChooser(picMessageIntent, "Abrir con..."));
+                    }else {
+                        startActivity(Intent.createChooser(browserIntent, "Abrir con..."));
+                    }
                     Toast.makeText(SettingActivity.this, getString(R.string.guardado), Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast.makeText(SettingActivity.this, "2"+e, Toast.LENGTH_SHORT).show();
                 }
             }
             else {
