@@ -76,6 +76,10 @@
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AllRegistersActivity" />
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/opciones" />
+
     </application>
 
 </manifest>

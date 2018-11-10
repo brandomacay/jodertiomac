@@ -760,9 +760,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     sb.append("</tr>");
                     sb.append("<tr>");
                     sb.append("<th>"+getString(R.string.entrada)+"</th>");
-                    sb.append("<th>"+getString(R.string.salida)+" </th>");
-                    sb.append("<th>"+getString(R.string.regreso_trabajo)+"</th>");
                     sb.append("<th>"+getString(R.string.salida_comer)+"</th>");
+                    sb.append("<th>"+getString(R.string.regreso_trabajo)+"</th>");
+                    sb.append("<th>"+getString(R.string.salida)+" </th>");
                     sb.append("</tr>");
                     Cursor mc = dbHelper.user_activity_from_date(result.getString(result.getColumnIndex("_id")),
                             initial_d, final_d);
@@ -778,11 +778,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         do {
                             sb.append("<tr>");
                             sb.append("<td>" + mc.getString(mc.getColumnIndex("workin")) + "</td>");
-                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))) {
+                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakout")))) {
                                 sb.append("<td> </td>");
                             }
                             else {
-                                sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
+                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
                             }
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakin")))) {
                                 sb.append("<td> </td>");
@@ -790,12 +790,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             else {
                                 sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
                             }
-                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakout")))) {
+                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))) {
                                 sb.append("<td> </td>");
                             }
                             else {
-                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
+                                sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
                             }
+
+
                            // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
                             //sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
                             sb.append("</tr>");
