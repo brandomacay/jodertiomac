@@ -524,7 +524,7 @@ public class UserPanelActivity extends AppCompatActivity {
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri uri = Uri.parse("https://play.google.com/store");
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=macay.maceda.reloj.checador");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
                 finish();

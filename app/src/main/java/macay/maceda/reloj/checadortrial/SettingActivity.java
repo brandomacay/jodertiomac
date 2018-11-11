@@ -784,27 +784,32 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         do {
                             i++;
                             sb.append("<tr>");
-                            sb.append("<td>" + i + "</td>");
-                            sb.append("<td>" + mc.getString(mc.getColumnIndex("workin")) + "</td>");
+                            sb.append("<td><strong>" + i + "</strong></td>");
+                            sb.append("<td><strong>" + mc.getString(mc.getColumnIndex("workin")) + "</strong></td>");
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakout")))) {
                                 sb.append("<td> </td>");
                             }
                             else {
-                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
+                                sb.append("<td><strong>" + mc.getString(mc.getColumnIndex("breakout")) + "</strong></td>");
                             }
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("breakin")))) {
                                 sb.append("<td> </td>");
                             }
                             else {
-                                sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
+                                sb.append("<td><strong>" + mc.getString(mc.getColumnIndex("breakin")) + "</strong></td>");
                             }
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))) {
                                 sb.append("<td> </td>");
                             }
                             else {
-                                sb.append("<td>" + mc.getString(mc.getColumnIndex("workout")) + "</td>");
+                                sb.append("<td><strong>" + mc.getString(mc.getColumnIndex("workout")) + "</strong></td>");
                             }
-                            sb.append("<td>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout"))) + "</td>");
+
+                            if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))){
+                                sb.append("<td> </td>");
+                            }else{
+                                sb.append("<td><strong>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout"))) + "</strong></td>");
+                            }
 
                             // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
                             //sb.append("<td>" + mc.getString(mc.getColumnIndex("breakout")) + "</td>");
@@ -815,7 +820,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         } while (mc.moveToNext());
                     }
                     else {
-                        sb.append("<td>"+getString(R.string.sin_registro)+ "</td>");
+                        sb.append("<td><strong>"+getString(R.string.sin_registro)+ "</strong></td>");
                     }
 
 
