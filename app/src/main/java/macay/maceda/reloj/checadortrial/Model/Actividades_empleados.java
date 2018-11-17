@@ -11,18 +11,19 @@ public class Actividades_empleados {
     private String workout;
     private String breaking;
     private String breakout;
-
+    private String formatdate;
 
     public Actividades_empleados() {
     }
 
     public Actividades_empleados( String userid,String working, String workout, String breaking,
-                                 String breakout) {
+                                 String breakout, String formatdate) {
         this.userid = userid;
         this.working = working;
         this.workout = workout;
         this.breaking = breaking;
         this.breakout = breakout;
+        this.formatdate = formatdate;
     }
 
     public long getId() {
@@ -70,4 +71,11 @@ public class Actividades_empleados {
         this.breakout = breakout;
     }
 
+    public String getFormatdate() {
+        return formatdate;
+    }
+
+    public void setFormatdate(String formatdate) {
+        this.formatdate = formatdate;
+    }
 }

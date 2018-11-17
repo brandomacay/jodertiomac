@@ -8,6 +8,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,14 +47,18 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    CardView cv,cv_pdf,cv_cvs,comunica;
+    CardView cv,cv_pdf,cv_cvs,comunica,changeformat;
+    TextView textformat;
     ProgressDialog pd;
     private DatabaseOpenHelper dbHelper;
     File f;
@@ -75,6 +81,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         cv_cvs.setOnClickListener(this);
         comunica = (CardView) findViewById(R.id.comunicate);
         comunica.setOnClickListener(this);
+        changeformat = (CardView) findViewById(R.id.changeformat);
+        changeformat.setOnClickListener(this);
+        textformat = (TextView) findViewById(R.id.textformat);
+
+        SharedPreferences prefs = getSharedPreferences("datos", MODE_PRIVATE);
+        String valorformatdate = prefs.getString("formatDate",null);
+        SimpleDateFormat formato = new SimpleDateFormat(valorformatdate);
+        long date = System.currentTimeMillis();
+        String fecha = formato.format(date);
+        textformat.setText(fecha);
         setupActionBar();
 
         dbHelper = new DatabaseOpenHelper(this);
@@ -109,6 +125,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 editarcomunicado();
                 break;
 
+            case R.id.changeformat:
+                alertSeletcFormat();
+                break;
         }
     }
     public void editarcomunicado(){
@@ -808,7 +827,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("workout")))){
                                 sb.append("<td> </td>");
                             }else{
-                                sb.append("<td><strong>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout"))) + "</strong></td>");
+                                String formato = "dd-MM-yyyy";
+                                if (TextUtils.isEmpty(mc.getString(mc.getColumnIndex("formatdate")))){
+                                    sb.append("<td><strong>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout")),formato) + "</strong></td>");
+                                }else{
+                                    formato = mc.getString(mc.getColumnIndex("formatdate"));
+                                    sb.append("<td><strong>" + result_time(mc.getString(mc.getColumnIndex("workin")),mc.getString(mc.getColumnIndex("workout")),formato) + "</strong></td>");
+                                }
                             }
 
                             // sb.append("<td>" + mc.getString(mc.getColumnIndex("breakin")) + "</td>");
@@ -826,12 +851,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 
                     sb.append("<br/>");
-                   /*
-                    Toast.makeText(SettingActivity.this,
-                            result.getString(result.getColumnIndex("name")) + " " +
-                                    result.getString(result.getColumnIndex("lastname")),
-                                     Toast.LENGTH_LONG).show();
-                    */
 
                 } while (result.moveToNext());
 
@@ -890,10 +909,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         return stringDate;
 
     }
-    private String result_time(String entrada,String salida ){
+    private String result_time(String entrada,String salida,String formate ){
 
-        Date start = stringToDate(entrada,"dd-MM-yyyy hh:mm:ss");
-        Date end = stringToDate(salida,"dd-MM-yyyy hh:mm:ss");
+        Date start = stringToDate(entrada,formate+" hh:mm:ss");
+        Date end = stringToDate(salida,formate+" hh:mm:ss");
         long resultado = end.getTime() - start.getTime();
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
@@ -1054,5 +1073,89 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     }
+    public void alertSeletcFormat(){
+        final long date = System.currentTimeMillis();
+        SimpleDateFormat formato = new SimpleDateFormat("MM-d-yyyy");
+        String fecha = formato.format(date);
+
+        SimpleDateFormat formato1 = new SimpleDateFormat("d-MM-yyyy");
+        String fecha1 = formato1.format(date);
+
+        SimpleDateFormat formato2 = new SimpleDateFormat("d-MMM-yyyy");
+        String fecha2 = formato2.format(date);
+
+        SimpleDateFormat formato3 = new SimpleDateFormat("MMM d, yyyy");
+        String fecha3 = formato3.format(date);
+
+        SimpleDateFormat formato4 = new SimpleDateFormat("yyyy-MM-d");
+        String fecha4 = formato4.format(date);
+
+        List<String> list;
+        list = new ArrayList<String>(5);
+        list.add(fecha);
+        list.add(fecha1);
+        list.add(fecha2);
+        list.add(fecha3);
+        list.add(fecha4);
+        final SharedPreferences.Editor valor = getSharedPreferences("datos", MODE_PRIVATE).edit();
+        SharedPreferences prefs = getSharedPreferences("datos", MODE_PRIVATE);
+        int valorposition = prefs.getInt("positionFormat",0);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+        builder.setTitle("Formato de fecha:")
+                .setSingleChoiceItems(list.toArray(new String[list.size()]), valorposition,null)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        switch (selectedPosition){
+                            case 0:
+                                valor.putString("formatDate","MM-d-yyyy");
+                                SimpleDateFormat formato = new SimpleDateFormat("MM-d-yyyy");
+                                String fecha = formato.format(date);
+                                textformat.setText(fecha);
+                                break;
+                            case 1:
+                                valor.putString("formatDate","d-MM-yyyy");
+                                SimpleDateFormat formato1 = new SimpleDateFormat("d-MM-yyyy");
+                                String fecha1 = formato1.format(date);
+                                textformat.setText(fecha1);
+                                break;
+                            case 2:
+                                valor.putString("formatDate","d-MMM-yyyy");
+                                SimpleDateFormat formato2 = new SimpleDateFormat("d-MMM-yyyy");
+                                String fecha2 = formato2.format(date);
+                                textformat.setText(fecha2);
+                                break;
+                            case 3:
+                                valor.putString("formatDate","MMM d, yyyy");
+                                SimpleDateFormat formato3 = new SimpleDateFormat("MMM d, yyyy");
+                                String fecha3 = formato3.format(date);
+                                textformat.setText(fecha3);
+                                break;
+                            case 4:
+                                valor.putString("formatDate","yyyy-MM-d");
+                                SimpleDateFormat formato4 = new SimpleDateFormat("yyyy-MM-d");
+                                String fecha4 = formato4.format(date);
+                                textformat.setText(fecha4);
+                                break;
+                        }
+                        valor.putInt("positionFormat",selectedPosition);
+                        valor.apply();
+                        Toast.makeText(SettingActivity.this, "Formato cambiado!", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+
+    }
+
 
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="macay.maceda.reloj.checadortrial.SettingActivity">
@@ -39,10 +41,8 @@
         android:id="@+id/pdf_share"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="55dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp">
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+       >
 
         <LinearLayout
             android:background="@drawable/custom_ripple"
@@ -71,55 +71,12 @@
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/comunicate"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvs_share"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_ripple"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="7.5dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    app:srcCompat="@drawable/sms" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:text="@string/mensaje_bloqueados" />
-            </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
     <android.support.v7.widget.CardView
         android:id="@+id/cvs_share"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="110dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp">
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+        >
 
         <LinearLayout
             android:background="@drawable/custom_ripple"
@@ -148,20 +105,17 @@
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-    <!--<android.support.v7.widget.CardView
-        android:id="@+id/all_activities"
+    <android.support.v7.widget.CardView
+        android:id="@+id/comunicate"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/cvs_share"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp">
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+        >
 
         <LinearLayout
-            android:background="@drawable/custom_ripple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/custom_ripple"
             android:orientation="vertical">
 
             <LinearLayout
@@ -173,8 +127,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:tint="#616161"
-                    app:srcCompat="@drawable/ic_timeline" />
+                    app:srcCompat="@drawable/sms" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -182,8 +135,42 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:text="Actividades de todos los empleados" />
+                    android:text="@string/mensaje_bloqueados" />
             </LinearLayout>
+
         </LinearLayout>
-    </android.support.v7.widget.CardView>-->
-</android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:id="@+id/changeformat"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_ripple"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="7.5dp"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Elija el formato de fecha"
+                android:textColor="#000000"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textformat"
+                android:text="12/04/2001"
+                />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

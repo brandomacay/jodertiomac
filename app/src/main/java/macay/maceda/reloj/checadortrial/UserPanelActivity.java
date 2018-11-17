@@ -3,6 +3,7 @@ package macay.maceda.reloj.checadortrial;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
@@ -43,17 +44,20 @@ public class UserPanelActivity extends AppCompatActivity {
     CircleImageView imagen;
     TextView nombres;
     private String mCurrentPhotoPath = "";
-    private String mWorkin, mWorkout, mBreakin, mBreakout;
+    private String mWorkin, mWorkout, mBreakin, mBreakout,formatdate;
     //private Handler _handler;
     private static final Handler handler = new Handler();
 
     private int screenWidth;
-
+    String valorformatdate=null;
+    String valorguardado=null;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_panel);
+        SharedPreferences prefs = getSharedPreferences("datos", MODE_PRIVATE);
+        valorformatdate = prefs.getString("formatDate",null);
         getSupportActionBar().hide();
         dbHelper = new DatabaseOpenHelper(this);
         imagen = (CircleImageView) findViewById(R.id.avatar);
@@ -90,80 +94,53 @@ public class UserPanelActivity extends AppCompatActivity {
         mCurrentPhotoPath = receivedPerson.getImage();
         nombres.setText(receivedPerson.getName()+" "+ receivedPerson.getLastname());
 
-        Cursor cursor = dbHelper.already_workin_today(String.valueOf(receivedPersonId), datex() );
+        Cursor cursor = dbHelper.already_workin_today(String.valueOf(receivedPersonId),"" );
 
         if(cursor.getCount() > 0) {
 
 
 
             if (cursor.moveToLast()) {// data?
+                valorguardado = null;
                 mWorkin = cursor.getString(cursor.getColumnIndex("workin"));
                 mWorkout = cursor.getString(cursor.getColumnIndex("workout"));
                 mBreakin = cursor.getString(cursor.getColumnIndex("breakin"));
                 mBreakout = cursor.getString(cursor.getColumnIndex("breakout"));
-
+                formatdate = cursor.getString(cursor.getColumnIndex("sdate"));
+                valorguardado = cursor.getString(cursor.getColumnIndex("formatdate"));
 
                 //cursor.getString(0)
 
-                /*
-                Toast.makeText(UserPanelActivity.this,
-                        "ENTRADA: " + mWorkin,
-                        Toast.LENGTH_SHORT).show();
-                        */
+                    /*
+                    Toast.makeText(UserPanelActivity.this,
+                            "ENTRADA: " + mWorkin,
+                            Toast.LENGTH_SHORT).show();
+                            */
                 chekin_tv.setVisibility(View.VISIBLE);
                 chekin_tv.setText(getString(R.string.entrada)+" :" +mWorkin);
 
                 if (mWorkout == null) {
-
+                    //la salida aun no fue registrada
                     workin.setVisibility(View.GONE);
                     workout.setVisibility(View.VISIBLE);
                     checkout_tv.setVisibility(View.GONE);
 
-
-                    /*
-                    Toast.makeText(UserPanelActivity.this,
-                            "Salida aun no registrada: ",
-                            Toast.LENGTH_SHORT).show();
-                            */
-
-
                 } else {
+                    //la salida ya fue registrada
                     workout.setVisibility(View.GONE);
                     workin.setVisibility(View.VISIBLE);
                     checkout_tv.setVisibility(View.VISIBLE);
                     checkout_tv.setText(getString(R.string.salida)+" :" + mWorkout);
-
-
-                    /*
-                    Toast.makeText(UserPanelActivity.this,
-                            "La salida ya fue registrada previamente",
-                            Toast.LENGTH_SHORT).show();
-                            */
                 }
 
-                if (mBreakout == null) {
-
-
-                }
-                else {
+                if (mBreakout != null) {
                     breakout_tv.setVisibility(View.VISIBLE);
                     breakout_tv.setText(getString(R.string.salida_comer) +mBreakout);
                     workout.setVisibility(View.GONE);
                     workback.setVisibility(View.VISIBLE);
                 }
 
-                if (mBreakin == null) {
-
-                    /*
-                    Toast.makeText(UserPanelActivity.this,
-                            "La llegada de comer aun no esta registrada",
-                            Toast.LENGTH_SHORT).show();
-                            */
-
-
-
-                }
-                else {
+                if (mBreakin != null) {
                     breakin_tv.setVisibility(View.VISIBLE);
                     breakin_tv.setText(getString(R.string.regreso_trabajo) +mBreakin);
 
@@ -178,7 +155,7 @@ public class UserPanelActivity extends AppCompatActivity {
                         workback.setVisibility(View.GONE);
                     }
 
-                }
+                } //la llegada a comer aun no esta registrada
 
             }
 
@@ -186,7 +163,6 @@ public class UserPanelActivity extends AppCompatActivity {
         else {
             workout.setVisibility(View.GONE);
             workin.setVisibility(View.VISIBLE);
-
 
         }
 
@@ -205,7 +181,11 @@ public class UserPanelActivity extends AppCompatActivity {
         workback.setOnClickListener(  new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbHelper.insert_user_breakin(String.valueOf(receivedPersonId), mWorkin, datetimex(), UserPanelActivity.this);
+                if (mWorkout == null){
+                    dbHelper.insert_user_breakin(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorguardado), UserPanelActivity.this);
+                }else{
+                    dbHelper.insert_user_breakin(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorformatdate), UserPanelActivity.this);
+                }
                 finish();
 
             }
@@ -216,53 +196,19 @@ public class UserPanelActivity extends AppCompatActivity {
         workin.setOnClickListener(  new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(UserPanelActivity.this,
-                  //      "userid=" + String.valueOf(receivedPersonId) + " date=" +datex(),
-                    //    Toast.LENGTH_SHORT).show();
-
-                /*
-
-                Cursor cursor = dbHelper.already_workin_today(String.valueOf(receivedPersonId), datex() );
-
-                if(cursor.getCount() > 0) {
-
-                    Toast.makeText(UserPanelActivity.this,
-                            "La entrada fue registrada anteriormente",
-                            Toast.LENGTH_SHORT).show();
-                  //  mWorkin = cursor.getString(cursor.getColumnIndex("workin"));
-                } else {
-                    dbHelper.insert_user_workin(receivedPersonId, datex(), timex(), datetimex());
-
-                    Toast.makeText(UserPanelActivity.this,
-                            "La entrada fue registrada correctamente",
-                            Toast.LENGTH_LONG).show();
-                    finish();
-                }
-
-
-                */
-
-                if (mBreakout == null) {
-                    dbHelper.insert_user_workin(receivedPersonId, datex(), datetimex());
-                    Toast.makeText(UserPanelActivity.this,
-                            getString(R.string.entrada_registrada),
-                            Toast.LENGTH_LONG).show();
-                    finish();
-                }
-                else {
-
-                        dbHelper.insert_user_workin(receivedPersonId, datex(), datetimex());
-                        Toast.makeText(UserPanelActivity.this,
-                                getString(R.string.entrada_registrada),
-                                Toast.LENGTH_LONG).show();
-                        finish();
+                if (mWorkout == null){
+                    if (valorguardado!=null){
+                        dbHelper.insert_user_workin(receivedPersonId, datex(), datetimexx(valorguardado),valorguardado);
+                    }else{
+                        dbHelper.insert_user_workin(receivedPersonId, datex(), datetimexx(valorformatdate),valorformatdate);
                     }
-
-                   /*
-                    Toast.makeText(UserPanelActivity.this,
-                            "La entrada fue registrada correctamente",
-                            Toast.LENGTH_LONG).show();
-                            */
+                }else{
+                    dbHelper.insert_user_workin(receivedPersonId, datex(), datetimexx(valorformatdate),valorformatdate);
+                }
+                Toast.makeText(UserPanelActivity.this,
+                        getString(R.string.entrada_registrada),
+                        Toast.LENGTH_LONG).show();
+                finish();
 
             }
         });
@@ -283,10 +229,12 @@ public class UserPanelActivity extends AppCompatActivity {
                     options_exit();
                 }
                 else {
-                    dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
-                            UserPanelActivity.this );
+                    if (mWorkout == null){
+                        dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorguardado), UserPanelActivity.this );
+                    }else{
+                        dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorformatdate), UserPanelActivity.this );
+                    }
                     Toast.makeText(UserPanelActivity.this,getString(R.string.culminacion_trabajo_exitosa),Toast.LENGTH_LONG).show();
-                   // dialog.dismiss();
                     finish();
                 }
 
@@ -382,8 +330,11 @@ public class UserPanelActivity extends AppCompatActivity {
         person_culminate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
-                    UserPanelActivity.this );
+                if (mWorkout == null){
+                    dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorguardado),UserPanelActivity.this );
+                }else{
+                    dbHelper.insert_user_workout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorformatdate),UserPanelActivity.this );
+                }
                 Toast.makeText(UserPanelActivity.this,getString(R.string.culminacion_trabajo_exitosa),Toast.LENGTH_LONG).show();
                 dialog.dismiss();
                 finish();
@@ -393,76 +344,17 @@ public class UserPanelActivity extends AppCompatActivity {
         person_food.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                dbHelper.insert_user_breakout(String.valueOf(receivedPersonId), mWorkin, datetimex(),
-                        UserPanelActivity.this );
-
+                if (mWorkout == null){
+                    dbHelper.insert_user_breakout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorguardado),UserPanelActivity.this );
+                }else{
+                    dbHelper.insert_user_breakout(String.valueOf(receivedPersonId), mWorkin, datetimexx(valorformatdate),UserPanelActivity.this );
+                }
                 Toast.makeText(UserPanelActivity.this,getString(R.string.hora_comer),Toast.LENGTH_LONG).show();
                 dialog.dismiss();
                 finish();
             }
         });
     }
-
-
-    public String diferenciaFechas(String inicio, String llegada){
-
-        Date fechaInicio = null;
-        Date fechaLlegada = null;
-
-        // configuramos el formato en el que esta guardada la fecha en
-        //  los strings que nos pasan
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        try {
-            // aca realizamos el parse, para obtener objetos de tipo Date de
-            // las Strings
-            fechaInicio = formato.parse(inicio);
-            fechaLlegada = formato.parse(llegada);
-
-        } catch (ParseException e) {
-            // Log.e(TAG, "Funcion diferenciaFechas: Error Parse " + e);
-        } catch (Exception e){
-            // Log.e(TAG, "Funcion diferenciaFechas: Error " + e);
-        }
-
-        // tomamos la instancia del tipo de calendario
-        Calendar calendarInicio = Calendar.getInstance();
-        Calendar calendarFinal = Calendar.getInstance();
-
-        // Configramos la fecha del calendatio, tomando los valores del date que
-        // generamos en el parse
-        calendarInicio.setTime(fechaInicio);
-        calendarFinal.setTime(fechaLlegada);
-
-        // obtenemos el valor de las fechas en milisegundos
-        long milisegundos1 = calendarInicio.getTimeInMillis();
-        long milisegundos2 = calendarFinal.getTimeInMillis();
-
-        // tomamos la diferencia
-        long diferenciaMilisegundos = milisegundos2 - milisegundos1;
-
-        // Despues va a depender en que formato queremos  mostrar esa
-        // diferencia, minutos, segundo horas, dias, etc, aca van algunos
-        // ejemplos de conversion
-
-        // calcular la diferencia en segundos
-        long diffSegundos =  Math.abs (diferenciaMilisegundos / 1000);
-
-        // calcular la diferencia en minutos
-        long diffMinutos =  Math.abs (diferenciaMilisegundos / (60 * 1000));
-        long restominutos = diffMinutos%60;
-
-        // calcular la diferencia en horas
-        long diffHoras =   (diferenciaMilisegundos / (60 * 60 * 1000));
-
-        // calcular la diferencia en dias
-        long diffdias = Math.abs ( diferenciaMilisegundos / (24 * 60 * 60 * 1000) );
-
-        // devolvemos el resultado en un string
-        return String.valueOf(diffHoras + "H " + restominutos + "m ");
-    }
-
     public static String datex () {
         Date date = Calendar.getInstance().getTime();
 
@@ -472,18 +364,18 @@ public class UserPanelActivity extends AppCompatActivity {
         return today;
     }
 
-    public static String datetimex () {
-        Date date = Calendar.getInstance().getTime();
 
+    public static String datetime () {
+        Date date = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String today = formatter.format(date);
 
         return today;
     }
-    public static String timex () {
-        Date date = Calendar.getInstance().getTime();
 
-        DateFormat formatter = new SimpleDateFormat("hh:mm:ss");
+    public static String datetimexx (String typeformat) {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat formatter = new SimpleDateFormat(typeformat+" hh:mm:ss");
         String today = formatter.format(date);
 
         return today;

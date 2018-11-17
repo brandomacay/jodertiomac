@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -20,10 +21,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import macay.maceda.reloj.checadortrial.DataBase.DatabaseOpenHelper;
 import macay.maceda.reloj.checadortrial.Model.Empleados_admin;
@@ -96,6 +101,12 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             }
         };
         t.start();
+        //savedataFormatDate
+        SharedPreferences prefs = getSharedPreferences("datos", MODE_PRIVATE);
+        String valorformatdate = prefs.getString("formatDate",null);
+        if (valorformatdate == null){
+            alertSeletcFormat();
+        }
         btn_admin.setOnClickListener(this);
         btn_user.setOnClickListener(this);
         getSupportActionBar().hide();
@@ -327,8 +338,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
 
                 if (user_id.getText().toString().trim().isEmpty()){
                     user_id.setError(getString(R.string.ingresa_id));
-                }
-                if (user_password.getText().toString().trim().isEmpty()){
+                }else if (user_password.getText().toString().trim().isEmpty()){
                     user_password.setError(getString(R.string.ingresa_pin));
                 }else {
                     Empleados_admin receivedPerson = dbHelper.getEmpleado(user_id.getText().toString(), user_password.getText().toString());
@@ -393,6 +403,67 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         Intent goToUpdate = new Intent(StartActivity.this, UserPanelActivity.class);
         goToUpdate.putExtra("USER_ID", personId);
         startActivity(goToUpdate);
+
+    }
+    public void alertSeletcFormat(){
+        long date = System.currentTimeMillis();
+        SimpleDateFormat formato = new SimpleDateFormat("MM-d-yyyy");
+        String fecha = formato.format(date);
+
+        SimpleDateFormat formato1 = new SimpleDateFormat("d-MM-yyyy");
+        String fecha1 = formato1.format(date);
+
+        SimpleDateFormat formato2 = new SimpleDateFormat("d-MMM-yyyy");
+        String fecha2 = formato2.format(date);
+
+        SimpleDateFormat formato3 = new SimpleDateFormat("MMM d, yyyy");
+        String fecha3 = formato3.format(date);
+
+        SimpleDateFormat formato4 = new SimpleDateFormat("yyyy-MM-d");
+        String fecha4 = formato4.format(date);
+
+        List<String> list;
+        list = new ArrayList<String>();
+        list.add(fecha);
+        list.add(fecha1);
+        list.add(fecha2);
+        list.add(fecha3);
+        list.add(fecha4);
+
+        final SharedPreferences.Editor valor = getSharedPreferences("datos", MODE_PRIVATE).edit();
+        AlertDialog.Builder builder = new AlertDialog.Builder(StartActivity.this);
+        builder.setTitle("Formato de fecha:")
+                .setSingleChoiceItems(list.toArray(new String[list.size()]), 0,null)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        switch (selectedPosition){
+                            case 0:
+                                valor.putString("formatDate","MM-d-yyyy");
+                                break;
+                            case 1:
+                                valor.putString("formatDate","d-MM-yyyy");
+                                break;
+                            case 2:
+                                valor.putString("formatDate","d-MMM-yyyy");
+                                break;
+                            case 3:
+                                valor.putString("formatDate","MMM d, yyyy");
+                                break;
+                            case 4:
+                                valor.putString("formatDate","yyyy-MM-d");
+                                break;
+                        }
+                        valor.putInt("positionFormat",selectedPosition);
+                        valor.apply();
+                        Toast.makeText(StartActivity.this, "Formato guardado!", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setCancelable(false)
+                .show();
 
     }
 

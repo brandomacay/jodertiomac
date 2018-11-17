@@ -20,7 +20,7 @@ import macay.maceda.reloj.checadortrial.R;
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "relojchecador";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //Tabla para los usuarios
     public static final String TABLE_NAME = "users";
@@ -47,6 +47,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CLOCKING_OUT = "workout";
     public static final String COLUMN_CLOCKING_BREAKIN = "breakin";
     public static final String COLUMN_CLOCKING_BREAKOUT = "breakout";
+    public static final String COLUMN_CLOCKING_FORMATDATE = "formatdate";
 
     public DatabaseOpenHelper(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
@@ -54,7 +55,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(" CREATE TABLE " + TABLE_NAME + " (" +
+        db.execSQL(" CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_PERSON_NAME + " TEXT NOT NULL, " +
                 COLUMN_PERSON_LASTNAME + " TEXT  NOT NULL, " +
@@ -71,15 +72,15 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
         );
 
-        db.execSQL(" CREATE TABLE " + TABLE_CLOCKING_NAME + " (" +
+        db.execSQL(" CREATE TABLE IF NOT EXISTS " + TABLE_CLOCKING_NAME + " (" +
                 COLUMN_CLOCKING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_CLOCKING_USERID + " NUMBER NOT NULL, " +
                 COLUMN_CLOCKING_SDATE + " DATE , " +
-
                 COLUMN_CLOCKING_IN + " DATETIME , " +
                 COLUMN_CLOCKING_OUT + " DATETIME , " +
                 COLUMN_CLOCKING_BREAKIN + " DATETIME , " +
-                COLUMN_CLOCKING_BREAKOUT + " DATETIME );"
+                COLUMN_CLOCKING_BREAKOUT + " DATETIME , " +
+                COLUMN_CLOCKING_FORMATDATE + " TEXT );"
 
         );
 
@@ -88,7 +89,11 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // you can implement here migration process
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        switch (oldVersion){
+            case 1:
+                db.execSQL("ALTER TABLE "+ TABLE_CLOCKING_NAME+" ADD COLUMN "+ COLUMN_CLOCKING_FORMATDATE +" TEXT ");
+                break;
+        }
         this.onCreate(db);
     }
     public void insertPerson(Empleados_admin person) {
@@ -124,7 +129,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
             query = "SELECT  * FROM " + TABLE_NAME;
         }else{
             //filter results by filter option provided
-          //  query = "SELECT  * FROM " + TABLE_NAME + " WHERE name LIKE '"+ filter + "%' OR lastname LIKE '"
+            //  query = "SELECT  * FROM " + TABLE_NAME + " WHERE name LIKE '"+ filter + "%' OR lastname LIKE '"
             //+ filter + "%'";
             query = "SELECT  * FROM " + TABLE_NAME + " WHERE name LIKE '"+ filter+ "%'" ;
         }
@@ -169,7 +174,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public List<Empleados_admin> peopleList(String filter) {
         String query;
         if(filter.equals("")){
-            //regular query
+            //regular queryC:\Users\Brandon\Desktop\RelojTrial\app\build\outputs\apk\debug
             query = "SELECT  * FROM " + TABLE_NAME ;
         }else{
             //filter results by filter option provided
@@ -264,7 +269,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 person.setWorkout(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_OUT)));
                 person.setBreaking(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_BREAKIN)));
                 person.setBreakout(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_BREAKOUT)));
-
+                person.setFormatdate(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_FORMATDATE)));
                 personLinkedList.add(person);
             } while (cursor.moveToNext());
             db.close();
@@ -335,7 +340,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 person.setWorkout(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_OUT)));
                 person.setBreaking(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_BREAKIN)));
                 person.setBreakout(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_BREAKOUT)));
-
+                person.setFormatdate(cursor.getString(cursor.getColumnIndex(COLUMN_CLOCKING_FORMATDATE)));
                 personLinkedList.add(person);
             } while (cursor.moveToNext());
             db.close();
@@ -428,27 +433,15 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     }
 
     //insertar entradas y salidas por fecha
-    public void insert_user_workin(long userid, String datex, String datetimex) {
+    public void insert_user_workin(long userid, String datex, String datetimex,String formate) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_CLOCKING_USERID, userid);
-      //  values.put(COLUMN_CLOCKING_DATE, today);
-
         values.put(COLUMN_CLOCKING_SDATE, datex);
         values.put(COLUMN_CLOCKING_IN, datetimex);
-        /*
-        values.put(COLUMN_PERSON_BIRTHDAY, person.getBirthday());
-        values.put(COLUMN_PERSON_EMAIL, person.getEmail());
-        values.put(COLUMN_PERSON_PHONE, person.getNumber_phone());
-        values.put(COLUMN_PERSON_OCCUPATION, person.getOccupation());
-        values.put(COLUMN_PERSON_ADDRESS, person.getAddress());
-        values.put(COLUMN_PERSON_AREA, person.getArea());
-        values.put(COLUMN_PERSON_STARTEDDATE, person.getDatework());
-        values.put(COLUMN_PERSON_IMAGE, person.getImage());
-        values.put(COLUMN_PERSON_PASSWORD, person.getPassword());
-        */
+        values.put(COLUMN_CLOCKING_FORMATDATE,formate);
 
         // insert
         db.insert(TABLE_CLOCKING_NAME,null, values);
@@ -498,14 +491,14 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
         String query = "SELECT  * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ id;
 
-     //   String query = "SELECT  * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ id + " AND date='" + date + "'";
+        //   String query = "SELECT  * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ id + " AND date='" + date + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         //Empleados_admin receivedPerson = new Empleados_admin();
-       // if(cursor.getCount() > 0) {
+        // if(cursor.getCount() > 0) {
 
 
-            return cursor;
+        return cursor;
 
 
     }
@@ -539,12 +532,12 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ _id
                 + " AND  strftime('%d-%m-%Y', workin) BETWEEN strftime('%d-%m-%Y', '" + idate + "') " +
                 "AND strftime('%d-%m-%Y', '" + fdate + "') " +
-                 " ORDER BY _id " + " DESC";
+                " ORDER BY _id " + " DESC";
 
-      //  Cursor mCursor = db.query(TABLE_CLOCKING_NAME, null,
+        //  Cursor mCursor = db.query(TABLE_CLOCKING_NAME, null,
         //        "userid = ? AND workin BETWEEN strftime('%d-%m-%Y', ?) AND strftime('%d-%m-%Y', ?)",
-          //      new String[] {_id, idate, fdate} ,
-            //    null, null, "_id DESC");
+        //      new String[] {_id, idate, fdate} ,
+        //    null, null, "_id DESC");
 
 
 
@@ -556,14 +549,14 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public  Cursor user_activity_from_date (String _id, String idate, String fdate) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-       // String query = "SELECT * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ _id
-         //       +
-           //     " ORDER BY _id " + " DESC";
+        // String query = "SELECT * FROM " + TABLE_CLOCKING_NAME + " WHERE userid="+ _id
+        //       +
+        //     " ORDER BY _id " + " DESC";
 
-          Cursor mCursor = db.query(TABLE_CLOCKING_NAME, null,
+        Cursor mCursor = db.query(TABLE_CLOCKING_NAME, null,
                 "userid = ? AND sdate BETWEEN ? AND ?",
-              new String[] {_id, idate, fdate} ,
-            null, null, "_id DESC");
+                new String[] {_id, idate, fdate} ,
+                null, null, "_id DESC");
 
 
 
@@ -585,4 +578,3 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     }
 
 }
-

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class Person_detail_activivities extends RecyclerView.Adapter<Person_deta
     // Replace the contents of a view (invoked by the layout manager)
     @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     @Override
-    public void onBindViewHolder(Person_detail_activivities.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final Person_detail_activivities.ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         dbHelper = new DatabaseOpenHelper(mContext);
